@@ -1,0 +1,16 @@
+{
+  "name": "etcd-clientv3",
+  "version": "0.0.1",
+  "description": "A ectd client for nodejs (grpc api)",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "grpc": "^0.15.0",
+    "lodash": "^4.13.1",
+    "protobufjs": "^5.0.1"
+  }
+}
