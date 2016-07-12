@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package google.api;
 
+import "descriptor.proto";
 
 message Http {
     repeated HttpRule rules = 1;
@@ -24,4 +25,9 @@ message HttpRule {
 message CustomHttpPattern {
     optional string kind = 1;
     optional string path = 2;
+}
+
+extend google.protobuf.MethodOptions {
+
+  HttpRule http = 72295728;
 }
