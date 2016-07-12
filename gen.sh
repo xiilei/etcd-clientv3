@@ -30,9 +30,9 @@ function gen {
      -p ${BASE_DIR} \
      -p ${BASE_DIR}/gogoprotobuf \
      -s proto \
-     -t commonjs \
-     -o ${RUNDIR}/lib/pb/rpc.js \
-      ${BASE_DIR}/etcd/etcdserver/etcdserverpb/rpc.proto
+     -t $1 \
+     -e etcdserverpb \
+      ${BASE_DIR}/etcd/etcdserver/etcdserverpb/rpc.proto > ${RUNDIR}/lib/pb/rpc.$1
 }
 
 
@@ -45,4 +45,6 @@ else
     fi
 fi
 
-gen
+gen json
+gen proto
+gen commonjs

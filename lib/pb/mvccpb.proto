@@ -1,0 +1,23 @@
+syntax="proto3";
+
+package mvccpb;
+
+message KeyValue {
+        optional bytes key = 1;
+        optional int64 create_revision = 2;
+        optional int64 mod_revision = 3;
+        optional int64 version = 4;
+        optional bytes value = 5;
+        optional int64 lease = 6;
+}
+
+message Event {
+        optional EventType type = 1;
+        optional KeyValue kv = 2;
+        optional KeyValue prev_kv = 3;
+
+        enum EventType {
+            PUT = 0;
+            DELETE = 1;
+        }
+}

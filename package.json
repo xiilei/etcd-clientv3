@@ -11,6 +11,6 @@
   "dependencies": {
     "grpc": "^0.15.0",
     "lodash": "^4.13.1",
-    "protobufjs": "^5.0.1"
+    "protobufjs": "^4.0.0"
   }
 }

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package google.api;
+
+
+message Http {
+    repeated HttpRule rules = 1;
+}
+
+message HttpRule {
+    oneof pattern {
+        string get = 2;
+        string put = 3;
+        string post = 4;
+        string delete = 5;
+        string patch = 6;
+        CustomHttpPattern custom = 8;
+    }
+    optional string selector = 1;
+    optional string body = 7;
+    repeated HttpRule additional_bindings = 11;
+}
+
+message CustomHttpPattern {
+    optional string kind = 1;
+    optional string path = 2;
+}

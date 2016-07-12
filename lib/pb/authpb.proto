@@ -1,0 +1,26 @@
+syntax="proto3";
+
+package authpb;
+
+message User {
+    optional bytes name = 1;
+    optional bytes password = 2;
+    repeated string roles = 3;
+}
+
+message Permission {
+    optional Type permType = 1;
+    optional bytes key = 2;
+    optional bytes range_end = 3;
+
+    enum Type {
+        READ = 0;
+        WRITE = 1;
+        READWRITE = 2;
+    }
+}
+
+message Role {
+    optional bytes name = 1;
+    repeated Permission keyPermission = 2;
+}

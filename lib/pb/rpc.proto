@@ -1,0 +1,613 @@
+syntax="proto3";
+
+package etcdserverpb;
+
+import "authpb.proto";
+import "googleapi.proto";
+import "mvccpb.proto";
+
+enum AlarmType {
+    NONE = 0;
+    NOSPACE = 1;
+}
+
+message ResponseHeader {
+    optional uint64 cluster_id = 1;
+    optional uint64 member_id = 2;
+    optional int64 revision = 3;
+    optional uint64 raft_term = 4;
+}
+
+message RangeRequest {
+    optional bytes key = 1;
+    optional bytes range_end = 2;
+    optional int64 limit = 3;
+    optional int64 revision = 4;
+    optional SortOrder sort_order = 5;
+    optional SortTarget sort_target = 6;
+    optional bool serializable = 7;
+    optional bool keys_only = 8;
+    optional bool count_only = 9;
+
+    enum SortOrder {
+        NONE = 0;
+        ASCEND = 1;
+        DESCEND = 2;
+    }
+
+    enum SortTarget {
+        KEY = 0;
+        VERSION = 1;
+        CREATE = 2;
+        MOD = 3;
+        VALUE = 4;
+    }
+}
+
+message RangeResponse {
+    optional ResponseHeader header = 1;
+    repeated mvccpb.KeyValue kvs = 2;
+    optional bool more = 3;
+    optional int64 count = 4;
+}
+
+message PutRequest {
+    optional bytes key = 1;
+    optional bytes value = 2;
+    optional int64 lease = 3;
+    optional bool prev_kv = 4;
+}
+
+message PutResponse {
+    optional ResponseHeader header = 1;
+    optional mvccpb.KeyValue prev_kv = 2;
+}
+
+message DeleteRangeRequest {
+    optional bytes key = 1;
+    optional bytes range_end = 2;
+    optional bool prev_kv = 3;
+}
+
+message DeleteRangeResponse {
+    optional ResponseHeader header = 1;
+    optional int64 deleted = 2;
+    repeated mvccpb.KeyValue prev_kvs = 3;
+}
+
+message RequestOp {
+    oneof request {
+        RangeRequest request_range = 1;
+        PutRequest request_put = 2;
+        DeleteRangeRequest request_delete_range = 3;
+    }
+}
+
+message ResponseOp {
+    oneof response {
+        RangeResponse response_range = 1;
+        PutResponse response_put = 2;
+        DeleteRangeResponse response_delete_range = 3;
+    }
+}
+
+message Compare {
+    oneof target_union {
+        int64 version = 4;
+        int64 create_revision = 5;
+        int64 mod_revision = 6;
+        bytes value = 7;
+    }
+    optional CompareResult result = 1;
+    optional CompareTarget target = 2;
+    optional bytes key = 3;
+
+    enum CompareResult {
+        EQUAL = 0;
+        GREATER = 1;
+        LESS = 2;
+    }
+
+    enum CompareTarget {
+        VERSION = 0;
+        CREATE = 1;
+        MOD = 2;
+        VALUE = 3;
+    }
+}
+
+message TxnRequest {
+    repeated Compare compare = 1;
+    repeated RequestOp success = 2;
+    repeated RequestOp failure = 3;
+}
+
+message TxnResponse {
+    optional ResponseHeader header = 1;
+    optional bool succeeded = 2;
+    repeated ResponseOp responses = 3;
+}
+
+message CompactionRequest {
+    optional int64 revision = 1;
+    optional bool physical = 2;
+}
+
+message CompactionResponse {
+    optional ResponseHeader header = 1;
+}
+
+message HashRequest {
+}
+
+message HashResponse {
+    optional ResponseHeader header = 1;
+    optional uint32 hash = 2;
+}
+
+message SnapshotRequest {
+}
+
+message SnapshotResponse {
+    optional ResponseHeader header = 1;
+    optional uint64 remaining_bytes = 2;
+    optional bytes blob = 3;
+}
+
+message WatchRequest {
+    oneof request_union {
+        WatchCreateRequest create_request = 1;
+        WatchCancelRequest cancel_request = 2;
+    }
+}
+
+message WatchCreateRequest {
+    optional bytes key = 1;
+    optional bytes range_end = 2;
+    optional int64 start_revision = 3;
+    optional bool progress_notify = 4;
+    repeated FilterType filters = 5;
+    optional bool prev_kv = 6;
+
+    enum FilterType {
+        NOPUT = 0;
+        NODELETE = 1;
+    }
+}
+
+message WatchCancelRequest {
+    optional int64 watch_id = 1;
+}
+
+message WatchResponse {
+    optional ResponseHeader header = 1;
+    optional int64 watch_id = 2;
+    optional bool created = 3;
+    optional bool canceled = 4;
+    optional int64 compact_revision = 5;
+    repeated mvccpb.Event events = 11;
+}
+
+message LeaseGrantRequest {
+    optional int64 TTL = 1;
+    optional int64 ID = 2;
+}
+
+message LeaseGrantResponse {
+    optional ResponseHeader header = 1;
+    optional int64 ID = 2;
+    optional int64 TTL = 3;
+    optional string error = 4;
+}
+
+message LeaseRevokeRequest {
+    optional int64 ID = 1;
+}
+
+message LeaseRevokeResponse {
+    optional ResponseHeader header = 1;
+}
+
+message LeaseKeepAliveRequest {
+    optional int64 ID = 1;
+}
+
+message LeaseKeepAliveResponse {
+    optional ResponseHeader header = 1;
+    optional int64 ID = 2;
+    optional int64 TTL = 3;
+}
+
+message Member {
+    optional uint64 ID = 1;
+    optional string name = 2;
+    repeated string peerURLs = 3;
+    repeated string clientURLs = 4;
+}
+
+message MemberAddRequest {
+    repeated string peerURLs = 1;
+}
+
+message MemberAddResponse {
+    optional ResponseHeader header = 1;
+    optional Member member = 2;
+}
+
+message MemberRemoveRequest {
+    optional uint64 ID = 1;
+}
+
+message MemberRemoveResponse {
+    optional ResponseHeader header = 1;
+}
+
+message MemberUpdateRequest {
+    optional uint64 ID = 1;
+    repeated string peerURLs = 2;
+}
+
+message MemberUpdateResponse {
+    optional ResponseHeader header = 1;
+}
+
+message MemberListRequest {
+}
+
+message MemberListResponse {
+    optional ResponseHeader header = 1;
+    repeated Member members = 2;
+}
+
+message DefragmentRequest {
+}
+
+message DefragmentResponse {
+    optional ResponseHeader header = 1;
+}
+
+message AlarmRequest {
+    optional AlarmAction action = 1;
+    optional uint64 memberID = 2;
+    optional AlarmType alarm = 3;
+
+    enum AlarmAction {
+        GET = 0;
+        ACTIVATE = 1;
+        DEACTIVATE = 2;
+    }
+}
+
+message AlarmMember {
+    optional uint64 memberID = 1;
+    optional AlarmType alarm = 2;
+}
+
+message AlarmResponse {
+    optional ResponseHeader header = 1;
+    repeated AlarmMember alarms = 2;
+}
+
+message StatusRequest {
+}
+
+message StatusResponse {
+    optional ResponseHeader header = 1;
+    optional string version = 2;
+    optional int64 dbSize = 3;
+    optional uint64 leader = 4;
+    optional uint64 raftIndex = 5;
+    optional uint64 raftTerm = 6;
+}
+
+message AuthEnableRequest {
+}
+
+message AuthDisableRequest {
+}
+
+message AuthenticateRequest {
+    optional string name = 1;
+    optional string password = 2;
+}
+
+message AuthUserAddRequest {
+    optional string name = 1;
+    optional string password = 2;
+}
+
+message AuthUserGetRequest {
+    optional string name = 1;
+}
+
+message AuthUserDeleteRequest {
+    optional string name = 1;
+}
+
+message AuthUserChangePasswordRequest {
+    optional string name = 1;
+    optional string password = 2;
+}
+
+message AuthUserGrantRoleRequest {
+    optional string user = 1;
+    optional string role = 2;
+}
+
+message AuthUserRevokeRoleRequest {
+    optional string name = 1;
+    optional string role = 2;
+}
+
+message AuthRoleAddRequest {
+    optional string name = 1;
+}
+
+message AuthRoleGetRequest {
+    optional string role = 1;
+}
+
+message AuthUserListRequest {
+}
+
+message AuthRoleListRequest {
+}
+
+message AuthRoleDeleteRequest {
+    optional string role = 1;
+}
+
+message AuthRoleGrantPermissionRequest {
+    optional string name = 1;
+    optional authpb.Permission perm = 2;
+}
+
+message AuthRoleRevokePermissionRequest {
+    optional string role = 1;
+    optional string key = 2;
+    optional string range_end = 3;
+}
+
+message AuthEnableResponse {
+    optional ResponseHeader header = 1;
+}
+
+message AuthDisableResponse {
+    optional ResponseHeader header = 1;
+}
+
+message AuthenticateResponse {
+    optional ResponseHeader header = 1;
+    optional string token = 2;
+}
+
+message AuthUserAddResponse {
+    optional ResponseHeader header = 1;
+}
+
+message AuthUserGetResponse {
+    optional ResponseHeader header = 1;
+    repeated string roles = 2;
+}
+
+message AuthUserDeleteResponse {
+    optional ResponseHeader header = 1;
+}
+
+message AuthUserChangePasswordResponse {
+    optional ResponseHeader header = 1;
+}
+
+message AuthUserGrantRoleResponse {
+    optional ResponseHeader header = 1;
+}
+
+message AuthUserRevokeRoleResponse {
+    optional ResponseHeader header = 1;
+}
+
+message AuthRoleAddResponse {
+    optional ResponseHeader header = 1;
+}
+
+message AuthRoleGetResponse {
+    optional ResponseHeader header = 1;
+    repeated authpb.Permission perm = 2;
+}
+
+message AuthRoleListResponse {
+    optional ResponseHeader header = 1;
+    repeated string roles = 2;
+}
+
+message AuthUserListResponse {
+    optional ResponseHeader header = 1;
+    repeated string users = 2;
+}
+
+message AuthRoleDeleteResponse {
+    optional ResponseHeader header = 1;
+}
+
+message AuthRoleGrantPermissionResponse {
+    optional ResponseHeader header = 1;
+}
+
+message AuthRoleRevokePermissionResponse {
+    optional ResponseHeader header = 1;
+}
+
+service KV {
+    rpc Range(RangeRequest) returns(RangeResponse) {
+        option (google.api.http).post = "/v3alpha/kv/range";
+        option (google.api.http).body = "*";
+    }
+
+    rpc Put(PutRequest) returns(PutResponse) {
+        option (google.api.http).post = "/v3alpha/kv/put";
+        option (google.api.http).body = "*";
+    }
+
+    rpc DeleteRange(DeleteRangeRequest) returns(DeleteRangeResponse);
+
+    rpc Txn(TxnRequest) returns(TxnResponse) {
+        option (google.api.http).post = "/v3alpha/kv/txn";
+        option (google.api.http).body = "*";
+    }
+
+    rpc Compact(CompactionRequest) returns(CompactionResponse) {
+        option (google.api.http).post = "/v3alpha/kv/compaction";
+        option (google.api.http).body = "*";
+    }
+}
+service Watch {
+    rpc Watch(WatchRequest) returns(WatchResponse) {
+        option (google.api.http).post = "/v3alpha/watch";
+        option (google.api.http).body = "*";
+    }
+}
+service Lease {
+    rpc LeaseGrant(LeaseGrantRequest) returns(LeaseGrantResponse) {
+        option (google.api.http).post = "/v3alpha/lease/grant";
+        option (google.api.http).body = "*";
+    }
+
+    rpc LeaseRevoke(LeaseRevokeRequest) returns(LeaseRevokeResponse) {
+        option (google.api.http).post = "/v3alpha/kv/lease/revoke";
+        option (google.api.http).body = "*";
+    }
+
+    rpc LeaseKeepAlive(LeaseKeepAliveRequest) returns(LeaseKeepAliveResponse) {
+        option (google.api.http).post = "/v3alpha/lease/keepalive";
+        option (google.api.http).body = "*";
+    }
+}
+service Cluster {
+    rpc MemberAdd(MemberAddRequest) returns(MemberAddResponse) {
+        option (google.api.http).post = "/v3alpha/cluster/member/add";
+        option (google.api.http).body = "*";
+    }
+
+    rpc MemberRemove(MemberRemoveRequest) returns(MemberRemoveResponse) {
+        option (google.api.http).post = "/v3alpha/cluster/member/remove";
+        option (google.api.http).body = "*";
+    }
+
+    rpc MemberUpdate(MemberUpdateRequest) returns(MemberUpdateResponse) {
+        option (google.api.http).post = "/v3alpha/cluster/member/update";
+        option (google.api.http).body = "*";
+    }
+
+    rpc MemberList(MemberListRequest) returns(MemberListResponse) {
+        option (google.api.http).post = "/v3alpha/cluster/member/list";
+        option (google.api.http).body = "*";
+    }
+}
+service Maintenance {
+    rpc Alarm(AlarmRequest) returns(AlarmResponse) {
+        option (google.api.http).post = "/v3alpha/maintenance/alarm";
+        option (google.api.http).body = "*";
+    }
+
+    rpc Status(StatusRequest) returns(StatusResponse) {
+        option (google.api.http).post = "/v3alpha/maintenance/status";
+        option (google.api.http).body = "*";
+    }
+
+    rpc Defragment(DefragmentRequest) returns(DefragmentResponse) {
+        option (google.api.http).post = "/v3alpha/maintenance/defragment";
+        option (google.api.http).body = "*";
+    }
+
+    rpc Hash(HashRequest) returns(HashResponse) {
+        option (google.api.http).post = "/v3alpha/maintenance/hash";
+        option (google.api.http).body = "*";
+    }
+
+    rpc Snapshot(SnapshotRequest) returns(SnapshotResponse) {
+        option (google.api.http).post = "/v3alpha/maintenance/snapshot";
+        option (google.api.http).body = "*";
+    }
+}
+service Auth {
+    rpc AuthEnable(AuthEnableRequest) returns(AuthEnableResponse) {
+        option (google.api.http).post = "/v3alpha/auth/enable";
+        option (google.api.http).body = "*";
+    }
+
+    rpc AuthDisable(AuthDisableRequest) returns(AuthDisableResponse) {
+        option (google.api.http).post = "/v3alpha/auth/disable";
+        option (google.api.http).body = "*";
+    }
+
+    rpc Authenticate(AuthenticateRequest) returns(AuthenticateResponse) {
+        option (google.api.http).post = "/v3alpha/auth/authenticate";
+        option (google.api.http).body = "*";
+    }
+
+    rpc UserAdd(AuthUserAddRequest) returns(AuthUserAddResponse) {
+        option (google.api.http).post = "/v3alpha/auth/user/add";
+        option (google.api.http).body = "*";
+    }
+
+    rpc UserGet(AuthUserGetRequest) returns(AuthUserGetResponse) {
+        option (google.api.http).post = "/v3alpha/auth/user/get";
+        option (google.api.http).body = "*";
+    }
+
+    rpc UserList(AuthUserListRequest) returns(AuthUserListResponse) {
+        option (google.api.http).post = "/v3alpha/auth/user/list";
+        option (google.api.http).body = "*";
+    }
+
+    rpc UserDelete(AuthUserDeleteRequest) returns(AuthUserDeleteResponse) {
+        option (google.api.http).post = "/v3alpha/auth/user/delete";
+        option (google.api.http).body = "*";
+    }
+
+    rpc UserChangePassword(AuthUserChangePasswordRequest) returns(AuthUserChangePasswordResponse) {
+        option (google.api.http).post = "/v3alpha/auth/user/changepw";
+        option (google.api.http).body = "*";
+    }
+
+    rpc UserGrantRole(AuthUserGrantRoleRequest) returns(AuthUserGrantRoleResponse) {
+        option (google.api.http).post = "/v3alpha/auth/user/grant";
+        option (google.api.http).body = "*";
+    }
+
+    rpc UserRevokeRole(AuthUserRevokeRoleRequest) returns(AuthUserRevokeRoleResponse) {
+        option (google.api.http).post = "/v3alpha/auth/user/revoke";
+        option (google.api.http).body = "*";
+    }
+
+    rpc RoleAdd(AuthRoleAddRequest) returns(AuthRoleAddResponse) {
+        option (google.api.http).post = "/v3alpha/auth/role/add";
+        option (google.api.http).body = "*";
+    }
+
+    rpc RoleGet(AuthRoleGetRequest) returns(AuthRoleGetResponse) {
+        option (google.api.http).post = "/v3alpha/auth/role/get";
+        option (google.api.http).body = "*";
+    }
+
+    rpc RoleList(AuthRoleListRequest) returns(AuthRoleListResponse) {
+        option (google.api.http).post = "/v3alpha/auth/role/list";
+        option (google.api.http).body = "*";
+    }
+
+    rpc RoleDelete(AuthRoleDeleteRequest) returns(AuthRoleDeleteResponse) {
+        option (google.api.http).post = "/v3alpha/auth/role/delete";
+        option (google.api.http).body = "*";
+    }
+
+    rpc RoleGrantPermission(AuthRoleGrantPermissionRequest) returns(AuthRoleGrantPermissionResponse) {
+        option (google.api.http).post = "/v3alpha/auth/role/grant";
+        option (google.api.http).body = "*";
+    }
+
+    rpc RoleRevokePermission(AuthRoleRevokePermissionRequest) returns(AuthRoleRevokePermissionResponse) {
+        option (google.api.http).post = "/v3alpha/auth/role/revoke";
+        option (google.api.http).body = "*";
+    }
+}
+
