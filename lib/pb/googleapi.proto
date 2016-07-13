@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto2";
 
 package google.api;
 
@@ -28,6 +28,5 @@ message CustomHttpPattern {
 }
 
 extend google.protobuf.MethodOptions {
-
-  HttpRule http = 72295728;
+    optional HttpRule http = 72295728;
 }

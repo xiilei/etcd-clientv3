@@ -45,6 +45,4 @@ else
     fi
 fi
 
-gen json
-gen proto
-gen commonjs
+gen
