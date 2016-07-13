@@ -12,5 +12,9 @@
     "grpc": "^0.15.0",
     "lodash": "^4.13.1",
     "protobufjs": "^4.0.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
   }
 }

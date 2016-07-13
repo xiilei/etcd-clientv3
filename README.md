@@ -3,8 +3,11 @@
 ## Getting Started
 
 ```shell
-#generate ./lib/pb/rpc.js
-npm insall
-./gen.sh
-rm -rf protos
+
+# install google-protobuf package
+
+git clone https://github.com/google/protobuf.git
+
+npm install /path/to/protobuf/js
+
 ```
