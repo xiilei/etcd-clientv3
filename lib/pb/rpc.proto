@@ -19,8 +19,8 @@ message ResponseHeader {
 }
 
 message RangeRequest {
-    optional bytes key = 1;
-    optional bytes range_end = 2;
+    optional string key = 1;
+    optional string range_end = 2;
     optional int64 limit = 3;
     optional int64 revision = 4;
     optional SortOrder sort_order = 5;
@@ -52,8 +52,8 @@ message RangeResponse {
 }
 
 message PutRequest {
-    optional bytes key = 1;
-    optional bytes value = 2;
+    optional string key = 1;
+    optional string value = 2;
     optional int64 lease = 3;
     optional bool prev_kv = 4;
 }
@@ -64,8 +64,8 @@ message PutResponse {
 }
 
 message DeleteRangeRequest {
-    optional bytes key = 1;
-    optional bytes range_end = 2;
+    optional string key = 1;
+    optional string range_end = 2;
     optional bool prev_kv = 3;
 }
 
@@ -96,11 +96,11 @@ message Compare {
         int64 version = 4;
         int64 create_revision = 5;
         int64 mod_revision = 6;
-        bytes value = 7;
+        string value = 7;
     }
     optional CompareResult result = 1;
     optional CompareTarget target = 2;
-    optional bytes key = 3;
+    optional string key = 3;
 
     enum CompareResult {
         EQUAL = 0;
@@ -151,7 +151,7 @@ message SnapshotRequest {
 message SnapshotResponse {
     optional ResponseHeader header = 1;
     optional uint64 remaining_bytes = 2;
-    optional bytes blob = 3;
+    optional string blob = 3;
 }
 
 message WatchRequest {
@@ -162,8 +162,8 @@ message WatchRequest {
 }
 
 message WatchCreateRequest {
-    optional bytes key = 1;
-    optional bytes range_end = 2;
+    optional string key = 1;
+    optional string range_end = 2;
     optional int64 start_revision = 3;
     optional bool progress_notify = 4;
     repeated FilterType filters = 5;

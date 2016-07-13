@@ -5,7 +5,7 @@ var _ = require('lodash');
 
 // var request = new messages.PutRequest();
 // request.setKey("foo");
-// request.setValue("bar11");
+// request.setValue("bar12");
 
 // var kv = new services.KVClient('localhost:2379',grpc.credentials.createInsecure());
 // kv.put(request,function(err,response){
@@ -23,7 +23,7 @@ kv.range(request,function(err,response){
     console.log(err);
     console.log(Date.now()-start1);
     _.forEach(response.getKvsList(),function(mkv){
-        console.log('key:',mkv.getKey_asB64(),',value:',mkv.getValue_asB64());
+        console.log('key:',mkv.getKey(),',value:',mkv.getValue());
     });
 });
 

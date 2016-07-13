@@ -3,11 +3,11 @@ syntax = "proto2";
 package mvccpb;
 
 message KeyValue {
-        optional bytes key = 1;
+        optional string key = 1;
         optional int64 create_revision = 2;
         optional int64 mod_revision = 3;
         optional int64 version = 4;
-        optional bytes value = 5;
+        optional string value = 5;
         optional int64 lease = 6;
 }
 
