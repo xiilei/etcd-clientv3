@@ -21,7 +21,10 @@ request.setKey('foo');
 var kv = new services.KVClient(balancer.get(),grpc.credentials.createInsecure());
 var start1 = Date.now();
 kv.range(request,function(err,response){
-    console.log(err);
+    if(err){
+        console.log(err);
+        return;
+    }
     console.log(Date.now()-start1);
     _.forEach(response.getKvsList(),function(mkv){
         console.log('key:',mkv.getKey(),',value:',mkv.getValue());
