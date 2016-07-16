@@ -1,10 +1,11 @@
 var grpc = require('grpc');
 var etcdv3 =  require('..');
+var Balancer = require('../lib/balancer');
 var messages = etcdv3.messages;
 var services = etcdv3.services;
 var _ = require('lodash');
 
-var balancer = new etcdv3.Balancer(['localhost:2379','localhost:12379','localhost:22379']);
+var balancer = new Balancer(['localhost:2379','localhost:12379','localhost:22379']);
 // var request = new messages.PutRequest();
 // request.setKey("foo");
 // request.setValue("bar12");
@@ -17,6 +18,7 @@ var balancer = new etcdv3.Balancer(['localhost:2379','localhost:12379','localhos
 
 var request = new messages.RangeRequest();
 request.setKey('foo');
+request.setRangeEnd('foo2');
 
 var kv = new services.KVClient(balancer.get(),grpc.credentials.createInsecure());
 var start1 = Date.now();

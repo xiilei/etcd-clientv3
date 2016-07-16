@@ -1,4 +1,4 @@
-exports.Balancer = require('./lib/balancer');
+exports.Client = require('./lib/client');
 
 exports.services = require('./lib/pb/rpc_grpc_pb');
 

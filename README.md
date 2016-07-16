@@ -8,6 +8,10 @@
 
 git clone https://github.com/google/protobuf.git
 
+cd protobuf/js
+
+gulp dist
+
 npm install /path/to/protobuf/js
 
 ```

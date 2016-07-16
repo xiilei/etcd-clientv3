@@ -17,7 +17,7 @@ call.on('data',function (response) {
         var kv = event.getKv();
         console.log('key:',kv.getKey(),',value:',kv.getValue());
     });
-});
+});qq
 
 call.on('end',function(b){
     console.log('end:',b);
