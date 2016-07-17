@@ -1,22 +1,78 @@
 var expect = require('chai').expect;
-var Client = require('../lib/client');
+var etcdv3 = require('..');
+
+var eps = ['localhost:2379','localhost:22379','localhost:32379'];
 
 describe('kv',function () {
-	it('range keys',function(done){
-		var client = new Client(['localhost:2379','localhost:22379','localhost:32379']);
-		var opts = {
-			rangeEnd:'foo3'
-		}
-		client.kv().get('foo',function(err,response){
+	it('#one',function(done){
+		var client = new etcdv3.Client(eps);
+		client.kv().one('foo',function(err,value){
 			if(err){
 				done(err);
 				return;
 			}
-			response.getKvsList().forEach(function(kv){
-				console.log('key:',kv.getKey(),'value:',kv.getValue());
-			});
-			done();
+			expect(value).to.be.equal('bar');
 			client.close();
-		},opts);
+			done();
+		});
+	});
+	it('#get',function(done){
+		var client = new etcdv3.Client(eps);
+		client.kv().get('foo','foo3',function(err,pair){
+			if(err){
+				done(err);
+				return;
+			}
+			expect(pair).to.be.deep.equal({'foo':'bar','foo2':'1231'});
+			client.close();
+			done();
+		});
+	});
+	it('#count',function(done){
+		var client = new etcdv3.Client(eps);
+		client.kv().count('foo','foo3',function(err,c){
+			if(err){
+				done(err);
+				return;
+			}
+			expect(c).to.be.equal(2);
+			client.close();
+			done();
+		});
+	});
+	it('#keys',function(done){
+		var client = new etcdv3.Client(eps);
+		client.kv().keys('foo','foo3',function(err,keys){
+			if(err){
+				done(err);
+				return;
+			}
+			expect(keys).to.be.deep.equal(['foo','foo2']);
+			client.close();
+			done();
+		});
+	});
+	it('#set',function(done){
+		var client = new etcdv3.Client(eps);
+		client.kv().set('set1','123',function(err,header){
+			if(err){
+				done(err);
+				return;
+			}
+			client.close();
+			done();
+		});
+	});
+	it('#del',function(done){
+		var client = new etcdv3.Client(eps);
+		client.kv().del('set1','set2',function(err,c){
+			if(err){
+				done(err);
+				return;
+			}
+			expect(c).to.equal(1);
+			client.close();
+			done();
+		});
 	});
 });
