@@ -1,11 +1,10 @@
 var expect = require('chai').expect;
 var etcdv3 = require('..');
-
-var eps = ['localhost:2379','localhost:22379','localhost:32379'];
+var mock = require('./mock');
 
 describe('kv',function () {
 	it('#one',function(done){
-		var client = new etcdv3.Client(eps);
+		var client = new etcdv3.Client(mock.eps);
 		client.kv().one('foo',function(err,value){
 			if(err){
 				done(err);
@@ -17,7 +16,7 @@ describe('kv',function () {
 		});
 	});
 	it('#get',function(done){
-		var client = new etcdv3.Client(eps);
+		var client = new etcdv3.Client(mock.eps);
 		client.kv().get('foo','foo3',function(err,pair){
 			if(err){
 				done(err);
@@ -29,7 +28,7 @@ describe('kv',function () {
 		});
 	});
 	it('#count',function(done){
-		var client = new etcdv3.Client(eps);
+		var client = new etcdv3.Client(mock.eps);
 		client.kv().count('foo','foo3',function(err,c){
 			if(err){
 				done(err);
@@ -41,7 +40,7 @@ describe('kv',function () {
 		});
 	});
 	it('#keys',function(done){
-		var client = new etcdv3.Client(eps);
+		var client = new etcdv3.Client(mock.eps);
 		client.kv().keys('foo','foo3',function(err,keys){
 			if(err){
 				done(err);
@@ -53,7 +52,7 @@ describe('kv',function () {
 		});
 	});
 	it('#set',function(done){
-		var client = new etcdv3.Client(eps);
+		var client = new etcdv3.Client(mock.eps);
 		client.kv().set('set1','123',function(err,header){
 			if(err){
 				done(err);
@@ -64,7 +63,7 @@ describe('kv',function () {
 		});
 	});
 	it('#del',function(done){
-		var client = new etcdv3.Client(eps);
+		var client = new etcdv3.Client(mock.eps);
 		client.kv().del('set1','set2',function(err,c){
 			if(err){
 				done(err);

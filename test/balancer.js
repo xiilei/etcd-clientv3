@@ -9,4 +9,9 @@ describe('balancer',function () {
         expect(balancer.get()).to.equal(3);
         expect(balancer.get()).to.equal(1);
     });
+    it('only one endpoint',function(){
+        var balancer = new Balancer([1]);
+        expect(balancer.get()).to.equal(1);
+        expect(balancer.get()).to.equal(1);
+    });
 });
