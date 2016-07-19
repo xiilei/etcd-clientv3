@@ -20,7 +20,7 @@ describe('watcher',function () {
             done(err);
         });
         watcher.once('events',function (events) {
-            expect(events).to.be.deep.equal([{ type: 0, key: 'watch1', value: _value }]);
+            expect(events).to.be.deep.equal([{ type: etcdv3.EventPut, key: 'watch1', value: _value }]);
             watcher.cancel();
         });
         watcher.start();
