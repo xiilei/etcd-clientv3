@@ -1,6 +1,7 @@
 var expect = require('chai').expect;
-var etcdv3 = require('..');
 var mock = require('./mock');
+var etcdv3 = require('../index');
+
 
 describe('watcher',function () {
     this.timeout(5000);
@@ -34,7 +35,6 @@ describe('watcher',function () {
             if(err){
                 done(err);
             }
-            console.log('set:',_value);
         });
     });
 });
