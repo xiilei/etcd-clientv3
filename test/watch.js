@@ -1,6 +1,6 @@
 var expect = require('chai').expect;
 var mock = require('./mock');
-var etcdv3 = require('../index');
+var etcdv3 = require('..');
 
 
 describe('watcher',function () {

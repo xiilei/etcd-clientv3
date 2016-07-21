@@ -41,7 +41,7 @@ describe('kv',function () {
 	});
 	it('#keys',function(done){
 		var client = new etcdv3.Client(mock.eps);
-		client.kv().keys('foo','foo3',function(err,keys){
+		client.kv().keys('foo',true,function(err,keys){
 			if(err){
 				done(err);
 				return;
