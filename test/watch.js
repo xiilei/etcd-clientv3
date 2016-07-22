@@ -4,7 +4,7 @@ var etcdv3 = require('..');
 
 
 describe('watcher',function () {
-    this.timeout(5000);
+    this.timeout(5000000);
     it('create request',function(done){
         var client = new etcdv3.Client(mock.eps);
         var watcher = client.watcher({
@@ -13,7 +13,7 @@ describe('watcher',function () {
                     done(err);
                 }
             }
-        }).create('watch','watch2');
+        }).create('watch','watch2',{filters:[etcdv3.NoPut]});
         var _value = ''+Date.now();
         watcher.once('create',function(id){
             expect(id).be.equal(0);
@@ -28,7 +28,7 @@ describe('watcher',function () {
         });
         watcher.once('events',function (events) {
             expect(events).to.be.deep.equal([{ type: etcdv3.EventPut, key: 'watch1', value: _value }]);
-            watcher.cancel();
+            this.cancel();
         });
         watcher.start();
         client.kv().set('watch1',_value,function(err) {
