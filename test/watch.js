@@ -4,7 +4,7 @@ var etcdv3 = require('..');
 
 
 describe('watcher',function () {
-    this.timeout(5000000);
+    this.timeout(5000);
     it('create request',function(done){
         var client = new etcdv3.Client(mock.eps);
         var watcher = client.watcher({
