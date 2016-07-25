@@ -13,7 +13,7 @@ describe('watcher',function () {
                     done(err);
                 }
             }
-        }).create('watch','watch2',{filters:[etcdv3.NoPut]});
+        }).create('watch','watch2');
         var _value = ''+Date.now();
         watcher.once('create',function(id){
             expect(id).be.equal(0);
