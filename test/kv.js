@@ -3,6 +3,7 @@ var etcdv3 = require('..');
 var mock = require('./mock');
 
 describe('kv',function () {
+	this.timeout(5000);
 	it('#one',function(done){
 		var client = new etcdv3.Client(mock.eps);
 		client.kv().one('foo',function(err,value){
