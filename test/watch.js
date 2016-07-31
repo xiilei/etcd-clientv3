@@ -4,8 +4,8 @@ var etcdv3 = require('..');
 
 
 describe('watcher',function () {
-    this.timeout(5000);
-    it('create request',function(done){
+   this.timeout(5000);
+   it('create request',function(done){
         var client = new etcdv3.Client(mock.eps);
         var watcher = client.watcher({
             ready:function(err){
@@ -15,15 +15,16 @@ describe('watcher',function () {
             }
         }).create('watch','watch2');
         var _value = ''+Date.now();
-        watcher.once('create',function(id){
+        watcher.on('create',function(id){
             expect(id).be.equal(0);
         });
-        watcher.once('cancel',function(){
+        watcher.on('cancel',function(){
             this.close();
             client.close();
             done();
         })
-        watcher.once('error',function(err){
+        watcher.on('error',function(err){
+            // console.log('error',err);
             done(err);
         });
         watcher.once('events',function (events) {
@@ -36,5 +37,5 @@ describe('watcher',function () {
                 done(err);
             }
         });
-    });
+   });
 });
