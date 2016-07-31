@@ -20,7 +20,7 @@ npm install /path/to/protobuf/js
 
 ```javascript
 
-var client = etcdv3.Client(['localhost:2379','localhost:22379','localhost:32379']);
+var client = new etcdv3.Client(['localhost:2379','localhost:22379','localhost:32379']);
 
 //kv
 client.kv().one('foo',function(err,value){
