@@ -1,7 +1,9 @@
-exports.Client = require('./lib/client');
+var Client = require('./lib/client');
 
-exports.services = require('./lib/pb/rpc_grpc_pb');
+Client.services = require('./lib/pb/rpc_grpc_pb');
 
-exports.pb = require('./lib/pb/rpc_pb');
+Client.pb = require('./lib/pb/rpc_pb');
 
-Object.assign(exports,require('./lib/enum'));
+Object.assign(Client,require('./lib/enum'));
+
+module.exports = Client;

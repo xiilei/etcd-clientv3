@@ -20,15 +20,17 @@ npm install /path/to/protobuf/js
 
 ```javascript
 
-var client = new etcdv3.Client(['localhost:2379','localhost:22379','localhost:32379']);
+var Etcd = require('etcd-clientv3');
+
+var etcd = new Etcd(['localhost:2379','localhost:22379','localhost:32379']);
 
 //kv
-client.kv().one('foo',function(err,value){
+etcd.kv().one('foo',function(err,value){
     //...
 });
 
-watcher
-var watcher = client.watcher().create('foo','foo2');
+//watcher
+var watcher = etcd.watcher().create('foo','foo2');
 watcher.on('error',function(err){
     //...
 });

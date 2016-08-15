@@ -1,11 +1,11 @@
 var expect = require('chai').expect;
-var etcdv3 = require('..');
+var Etcd = require('..');
 var mock = require('./mock');
 
-var client = new etcdv3.Client(mock.eps);
+var etcd = new Etcd(mock.eps);
 describe('lease',function () {
     it('grant lease with id',function(done){
-        client.lease().grant(1,123123123123,function(err,leaseId){
+        etcd.lease().grant(1,123123123123,function(err,leaseId){
             if(err){
                 done(err);
                 return;
@@ -15,7 +15,7 @@ describe('lease',function () {
         });
     });
     it('grant and revoke',function(done){
-        var lease = client.lease();
+        var lease = etcd.lease();
         lease.grant(10,function(err,leaseId){
             if(err){
                 done(err);
